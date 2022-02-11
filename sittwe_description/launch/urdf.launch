@@ -1,0 +1,12 @@
+<launch>
+
+
+  <param name="robot_description" textfile="$(find sittwe_description)/urdf/sittwe.urdf" />
+  
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="use_tf_static" value="true" type="bool" />
+  </node>
+
+  <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher"/>
+  
+</launch>
