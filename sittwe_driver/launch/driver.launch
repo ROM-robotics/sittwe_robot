@@ -3,7 +3,7 @@
   <include file="$(find sittwe_description)/launch/urdf.launch" />
 
  <node name="arduino_node" pkg="sittwe_driver" type="arduino_node.py" output="screen">
-    <param name="port" value="/home/ubuntu/robotController" />
+    <param name="port" value="/home/ubuntu/romrobotics" />
     <param name="baudRate" value="115200" />
  </node>
 

@@ -24,7 +24,7 @@ class Arduino_Class(object):
 		self.actual_rpms = actual_rpm()
 		self._Counter = 0
 
-		port = rospy.get_param("~port", "/dev/ttyACM0")
+		port = rospy.get_param("~port", "/home/ubuntu/romrobotics")
 		baudRate = int(rospy.get_param("~baudRate", 115200))
 
 		rospy.loginfo("Starting with serial port: " + port + ", baud rate: " + str(baudRate))
@@ -58,7 +58,8 @@ class Arduino_Class(object):
 					self.actual_right_rpm = float(li[1])
 					self.actual_left_rpm = float(li[2])
 					self.delta_time  = float(li[3])
-
+					imu_yaw = float(li[4])
+     
 					self.actual_rpms.actual_right = self.actual_right_rpm
 					self.actual_rpms.actual_left = self.actual_left_rpm
 					self.actual_rpms.delta_time = self.delta_time;

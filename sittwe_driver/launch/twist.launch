@@ -1,7 +1,7 @@
 <launch>
-	<arg name="laser_scan" value="true"/>
-	<arg name="gmapping" value="true"/>
-	<arg name="amcl" value="true"/>
+	<arg name="laser_scan" value="false"/>
+	<arg name="gmapping" value="false"/>
+	<arg name="amcl" value="false"/>
 	<arg name="rviz" value="false"/>
 
 	<node name="twistToMotors" pkg="sittwe_driver" type="twist_to_motors" />

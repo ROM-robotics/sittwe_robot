@@ -16,6 +16,8 @@ double delta_time = 0.0;
 double x_pos = 0.0;
 double y_pos = 0.0;
 double theta = 0.0;
+double imu_yaw = 0.0;
+
 double delta_x = 0.0;
 double delta_y = 0.0;
 double delta_theta = 0.0;
@@ -28,6 +30,7 @@ void handle_rpm( const sittwe_driver::actual_rpm& rpm)
   right_act_rpm = rpm.actual_right;
   left_act_rpm  = rpm.actual_left;
   delta_time    = rpm.delta_time;
+  imu_yaw = rpm.imu_yaw;
 }
 
 int main(int argc, char** argv){
@@ -106,7 +109,7 @@ int main(int argc, char** argv){
     if(theta <= -two_pi) theta += two_pi;
 
     geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
-
+    // geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(imu_yaw);
     
       geometry_msgs::TransformStamped t;
       t.header.frame_id = odom;
