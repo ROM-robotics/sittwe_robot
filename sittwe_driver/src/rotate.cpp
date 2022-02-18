@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     //ROS_INFO_STREAM("degree"<< dis);
     ros::init(argc, argv, "rotate");
     ros::NodeHandle n;
-    ros::NodeHandle nh_private_("~");
+    //ros::NodeHandle nh_private_("~");
     ros::Publisher pub=n.advertise<geometry_msgs::Twist>("/cmd_vel",50);
     tf::TransformListener listener;
     tf::StampedTransform transform;
@@ -55,8 +55,8 @@ int main(int argc, char** argv)
 
     ros::Duration(1).sleep();
 
-    double angular_scale = 1.0;
-    nh_private_.getParam("angular_scale", angular_scale);
+    double angular_scale = 0.0;
+    n.getParam("/angular_scale", angular_scale);
 
         
     float goal_angel = degree_to_radian(dis) * angular_scale;               

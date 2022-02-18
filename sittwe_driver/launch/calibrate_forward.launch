@@ -1,8 +1,6 @@
 <launch>
-
- <node name="forward_calibrate" pkg="sittwe_driver" type="drive_forward" output="screen">
-    <param name="port" value="/home/ubuntu/romrobotics" />
-    <param name="baudRate" value="115200" />
- </node>
+    <param name="linear_scale" value="1.0" />
+    <node name="forward_calibrate" pkg="sittwe_driver" type="drive_forward" output="screen" args="1">
+    </node>
 
 </launch>

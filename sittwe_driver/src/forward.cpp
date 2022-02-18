@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 
     ros::init(argc, argv, "forward");
     ros::NodeHandle n;
-    ros::NodeHandle nh_private_("~");
+    //ros::NodeHandle nh_private_("~");
     ros::Publisher pub=n.advertise<geometry_msgs::Twist>("/cmd_vel",50);
     tf::TransformListener listener;
     tf::StampedTransform transform;
@@ -38,8 +38,8 @@ int main(int argc, char** argv)
     ros::Duration(1).sleep();
     move_cmd.linear.x += min_lin_velocity;
 
-    double linear_scale = 1.0;
-    nh_private_.getParam("linear_scale", linear_scale);
+    double linear_scale = 0.0;
+    n.getParam("/linear_scale", linear_scale);
     
     float goal_distance = dis * linear_scale;    // meter
 
