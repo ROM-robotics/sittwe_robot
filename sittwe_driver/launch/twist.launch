@@ -1,8 +1,4 @@
 <launch>
-	<arg name="laser_scan" value="false"/>
-	<arg name="gmapping" value="false"/>
-	<arg name="amcl" value="false"/>
-	<arg name="rviz" value="false"/>
 
 	<node name="twistToMotors" pkg="sittwe_driver" type="twist_to_motors" />
 
@@ -17,26 +13,4 @@
 	    <param name="angular_scale_accel" value="1.0" />
 	    <param name="alpha" value="1.0" />
 	</node>
-
-	<!-- lidar -->
-  	<group if="$(eval laser_scan == true)">
-	 	<include file="$(find rplidar_ros)/launch/rplidar.launch" />
-	 	<node name="baselink_laser_tf" type="static_transform_publisher" pkg="tf" args="0 0 0.1 0 0 0 1  /base_link laser  100"/>
-	</group>
-
-	<!-- gmapping -->
-	<group if="$(eval gmapping == true)">
-	 	<include file="$(find chefbot_slam)/launch/gmapping_demo.launch" />
-	</group>
-
-	<!-- amcl -->
-	<group if="$(eval amcl == true)">
-	 	<include file="$(find chefbot_slam)/launch/amcl_demo.launch" />
-	</group>
-
-	<!-- rviz -->
-	<group if="$(eval rviz == true)">
-	 	<node pkg="rviz" type="rviz" name="rviz" args="-d $(find chefbot_slam)/rviz/rviz.rviz"/>
-	</group>
-
-	 </launch>
+</launch>

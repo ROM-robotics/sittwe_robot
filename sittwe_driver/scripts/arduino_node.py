@@ -35,7 +35,7 @@ class Arduino_Class(object):
 		self._Actual_Publisher = rospy.Publisher('actual_rpm',actual_rpm,queue_size = 50)	
 
 		# for debugging
-		self._SerialPublisher = rospy.Publisher('serial', String,queue_size=10)
+		#self._SerialPublisher = rospy.Publisher('serial', String,queue_size=10)
 
 	def _Handle_rpm_request(self, msg):
 		self.desire_right_rpm = msg.desire_rpm_right
@@ -48,7 +48,7 @@ class Arduino_Class(object):
 
 	def _HandleReceivedLine(self,  line):
 		self._Counter = self._Counter + 1
-		self._SerialPublisher.publish(String(str(self._Counter) + ", in:  " + line))
+		#self._SerialPublisher.publish(String(str(self._Counter) + ", in:  " + line))
 		if(len(line) > 0):
 			lineParts = line.split(',')
 			li = lineParts
@@ -70,7 +70,7 @@ class Arduino_Class(object):
 				pass
 
 	def _WriteSerial(self, message):
-		self._SerialPublisher.publish(String(str(self._Counter) + ", out: " + message))
+		#self._SerialPublisher.publish(String(str(self._Counter) + ", out: " + message))
 		self._SerialDataGateway.Write(message)
 		#rospy.loginfo("_WriteSerial")
 		#rospy.loginfo(message)
