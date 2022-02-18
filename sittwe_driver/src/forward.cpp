@@ -12,6 +12,7 @@ float constant_lin_vel = OneRPM_per_linX * 20.0;           // 20 rpm
 
 int main(int argc, char** argv)
 {
+    /*
     if(argc != 2) { 
         std::cout<<"ERROR!"<<std::endl;
         std::cout<<"[ Usage: ]"<<std::endl;
@@ -20,11 +21,12 @@ int main(int argc, char** argv)
         return -1; 
     }
     float dis = atof(argv[1]);
+    */
     //ROS_INFO_STREAM("distance -> "<< dis);
 
     ros::init(argc, argv, "forward");
     ros::NodeHandle n;
-    //ros::NodeHandle nh_private_("~");
+    ros::NodeHandle nh_private_("~");
     ros::Publisher pub=n.advertise<geometry_msgs::Twist>("/cmd_vel",50);
     tf::TransformListener listener;
     tf::StampedTransform transform;
@@ -40,7 +42,9 @@ int main(int argc, char** argv)
 
     double linear_scale = 0.0;
     n.getParam("/linear_scale", linear_scale);
-    
+    float dis = 0.0;
+    nh_private_.getParam("forward_meter", dis);
+
     float goal_distance = dis * linear_scale;    // meter
 
         try     {   listener.waitForTransform("odom","base_link", ros::Time(0), ros::Duration(1.0));            }

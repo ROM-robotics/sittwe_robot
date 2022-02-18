@@ -28,7 +28,8 @@ float degree_to_radian(float angle)
 
 int main(int argc, char** argv)
 {
-        if(argc != 2) { 
+    /*
+    if(argc != 2) { 
         std::cout<<" Error!"<<std::endl;
         std::cout<<" [ Usage: ]"<<std::endl;
         std::cout<<"    rosrun rom2109_controller rotate [+/-degree]  "<<std::endl<<std::endl;
@@ -36,10 +37,12 @@ int main(int argc, char** argv)
         return -1; 
     }
     float dis = atof(argv[1]);
+    */
+
     //ROS_INFO_STREAM("degree"<< dis);
     ros::init(argc, argv, "rotate");
     ros::NodeHandle n;
-    //ros::NodeHandle nh_private_("~");
+    ros::NodeHandle nh_private_("~");
     ros::Publisher pub=n.advertise<geometry_msgs::Twist>("/cmd_vel",50);
     tf::TransformListener listener;
     tf::StampedTransform transform;
@@ -50,15 +53,18 @@ int main(int argc, char** argv)
 
     geometry_msgs::Twist move_cmd;
     move_cmd.linear.x = 0.0;
+
+    double angular_scale = 0.0;
+    n.getParam("/angular_scale", angular_scale);
+    float dis = 0.0;
+    nh_private_.getParam("rotate_degree", dis);
+
+
     if( dis > 0 )       { move_cmd.angular.z = angular_velocity;    }
     else if ( dis < 0)  { move_cmd.angular.z = -angular_velocity;   }
 
     ros::Duration(1).sleep();
-
-    double angular_scale = 0.0;
-    n.getParam("/angular_scale", angular_scale);
-
-        
+    
     float goal_angel = degree_to_radian(dis) * angular_scale;               
     //float angular_tolarance=0.0175;                         // 1 degree
     

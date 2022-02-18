@@ -1,6 +1,8 @@
 <launch>
-    <param name="angular_scale" value="1.0" />
-    <node name="rotate_calibrate" pkg="sittwe_driver" type="drive_rotate" output="screen" args="360">
-    </node>
 
+
+    <param name="angular_scale" value="1.0" />
+    <node name="rotate_calibrate" pkg="sittwe_driver" type="drive_rotate" output="screen">
+         <param name="rotate_degree" value="360.0"/>
+    </node>
 </launch>
