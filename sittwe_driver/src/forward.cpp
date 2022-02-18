@@ -13,7 +13,7 @@ float constant_lin_vel = OneRPM_per_linX * 20.0;           // 20 rpm
 
 int main(int argc, char** argv)
 {
-    if(argc != 3) { 
+    if(argc != 2) { 
         std::cout<<"ERROR!"<<std::endl;
         std::cout<<"[ Usage: ]"<<std::endl;
         std::cout<<"    rosrun rom2109_controller forward [distance(meter)] "<<std::endl<<std::endl;

@@ -212,11 +212,11 @@ include_directories(
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
-add_executable(forward src/forward.cpp)
-target_link_libraries(forward_1meter ${catkin_LIBRARIES})
+add_executable(drive_forward src/forward.cpp)
+target_link_libraries(drive_forward ${catkin_LIBRARIES})
 
-add_executable(rotate src/rotate.cpp)
-target_link_libraries(rotate ${catkin_LIBRARIES})
+add_executable(drive_rotate src/rotate.cpp)
+target_link_libraries(drive_rotate ${catkin_LIBRARIES})
 
 add_executable(base_controller src/base_controller.cpp)
 target_link_libraries(base_controller ${catkin_LIBRARIES})

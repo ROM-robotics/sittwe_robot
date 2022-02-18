@@ -5,7 +5,7 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <tf/tf.h>
 #include <tf/transform_listener.h>
-float pi_ = 3.141592; float 2pi_ = 6.283184;
+float pi_ = 3.141592; float two_pi = 6.283184;
 float rpm_10 = 0.412; float rpm_15 = 0.618;
 
 float normalize_angle(float angle)
@@ -13,11 +13,11 @@ float normalize_angle(float angle)
     float res = angle;
     while(res > pi_)
     {
-        res -= 2pi_;
+        res -= two_pi;
     }
     while(res < -pi_)
     {
-        res += 2pi_;
+        res += two_pi;
     }
     return res;
 }
@@ -29,7 +29,7 @@ float degree_to_radian(float angle)
 
 int main(int argc, char** argv)
 {
-        if(argc != 3) { 
+        if(argc != 2) { 
         std::cout<<" Error!"<<std::endl;
         std::cout<<" [ Usage: ]"<<std::endl;
         std::cout<<"    rosrun rom2109_controller rotate [+/-degree]  "<<std::endl<<std::endl;
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
 
         
     float goal_angel = degree_to_radian(dis) * angular_scale;               
-    float angular_tolarance=0.0175;                         // 1 degree
+    //float angular_tolarance=0.0175;                         // 1 degree
     
     try
     {
