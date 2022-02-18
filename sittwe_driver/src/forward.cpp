@@ -1,7 +1,6 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
-#include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <tf/tf.h>
 #include <tf/transform_listener.h>
@@ -16,7 +15,7 @@ int main(int argc, char** argv)
     if(argc != 2) { 
         std::cout<<"ERROR!"<<std::endl;
         std::cout<<"[ Usage: ]"<<std::endl;
-        std::cout<<"    rosrun rom2109_controller forward [distance(meter)] "<<std::endl<<std::endl;
+        std::cout<<"    rosrun rom2109_controller forward [+distance(meter)] "<<std::endl<<std::endl;
         std::cout<<"    example: rosrun rom2109_controller forward 2 "<<std::endl;
         return -1; 
     }

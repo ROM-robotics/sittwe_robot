@@ -212,6 +212,9 @@ include_directories(
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
+add_executable(stop src/stop.cpp)
+target_link_libraries(stop ${catkin_LIBRARIES})
+
 add_executable(drive_forward src/forward.cpp)
 target_link_libraries(drive_forward ${catkin_LIBRARIES})
 

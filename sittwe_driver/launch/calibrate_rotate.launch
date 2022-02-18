@@ -1,0 +1,8 @@
+<launch>
+
+ <node name="rotate_calibrate" pkg="sittwe_driver" type="drive_rotate" output="screen">
+    <param name="port" value="/home/ubuntu/romrobotics" />
+    <param name="baudRate" value="115200" />
+ </node>
+
+</launch>
