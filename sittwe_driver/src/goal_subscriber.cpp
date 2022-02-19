@@ -17,6 +17,13 @@ public:
     //subscribe to the data topic of interest
     sub_ = nh_.subscribe("/emergency_stop", 1, &GoalServer::emergencyCB, this);
     goal_sub = nh_.subscribe("/move_base_simple/goal", 1, &GoalServer::goalCB, this);
+
+    rate=10;
+    constant_lin_vel = 0.00408 * 20.0;           // 20 rpm
+    angular_velocity = 0.4120; 
+    pi_ = 3.141592; float two_pi = 6.283184;
+    deg_to_rad_constant = 3.141592/180.0;
+    emergency_stop = false;
   }
 
   ~GoalServer(void) { }
@@ -128,7 +135,9 @@ public:
     double target_x = target_pose->pose.position.x;   double target_y = target_pose->pose.position.y;
     ROS_INFO_STREAM("X=" << target_x << "Y=" << target_y << "W=" << target_pose->pose.orientation.w );
     int quardrant = checkQuardrant(target_x, target_y);
+    ROS_INFO_STREAM("Quardrant = "<< quardrant);
 
+/*
     tf::StampedTransform currentTF = checkTF();
 
     double current_x = currentTF.getOrigin().x();
@@ -156,6 +165,8 @@ public:
       break;
     }
 
+
+*/
   }
 
   void emergencyCB(const std_msgs::Int8::ConstPtr& msg)
@@ -173,15 +184,15 @@ protected:
   ros::Subscriber sub_;
   ros::Subscriber goal_sub;
   tf::TransformListener listener;
-  int rate=10;
+  int rate;
   ros::Rate r=10;
-  float constant_lin_vel = 0.00408 * 20.0;           // 20 rpm
-  float angular_velocity = 0.4120;  
+  float constant_lin_vel;           // 20 rpm
+  float angular_velocity; 
   geometry_msgs::Twist move_cmd;
   ros::Publisher pub=nh_.advertise<geometry_msgs::Twist>("/cmd_vel",50);
-  float pi_ = 3.141592; float two_pi = 6.283184;
-  float deg_to_rad_constant = 3.141592/180.0;
-  bool emergency_stop = false;
+  float pi_,two_pi;
+  float deg_to_rad_constant;
+  bool emergency_stop;
 };
 
 int main(int argc, char** argv)
