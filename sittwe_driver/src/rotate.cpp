@@ -116,7 +116,7 @@ int main(int argc, char** argv)
         double delta_angle = normalize_angle(rotation- last_angle);
         turn_angle += delta_angle;
         last_angle = rotation;
-}
+    }
         
    
     // stop
