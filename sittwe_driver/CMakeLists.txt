@@ -218,6 +218,9 @@ target_link_libraries(stop ${catkin_LIBRARIES})
 add_executable(drive_forward src/forward.cpp)
 target_link_libraries(drive_forward ${catkin_LIBRARIES})
 
+add_executable(drive_forward_constant src/forward_constant.cpp)
+target_link_libraries(drive_forward_constant ${catkin_LIBRARIES})
+
 add_executable(drive_rotate src/rotate.cpp)
 target_link_libraries(drive_rotate ${catkin_LIBRARIES})
 
