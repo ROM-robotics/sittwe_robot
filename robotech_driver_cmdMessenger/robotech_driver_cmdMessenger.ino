@@ -1,5 +1,5 @@
 /* Author: Pyae Soan Aung (ROM ROBOTICS)*/
-
+/*
 #define right_encoderA     19    
 #define right_encoderB     18
 #define left_encoderA      3   
@@ -12,6 +12,19 @@
 #define ENA2 10
 #define Left_in1 8
 #define Left_in2 9
+*/
+#define right_encoderA     3    
+#define right_encoderB     2
+#define left_encoderA      19   
+#define left_encoderB      18 
+
+#define ENA1 10
+#define Right_in1 8
+#define Right_in2 9
+
+#define ENA2 5
+#define Left_in1 6
+#define Left_in2 7
 
 #include <Wire.h>
 #include "robot_specs.h"

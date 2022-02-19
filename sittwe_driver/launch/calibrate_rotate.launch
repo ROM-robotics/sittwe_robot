@@ -1,6 +1,6 @@
 <launch>
-    <arg name="angular_tolerance" value="1.0"/>
-    <arg name="degree" value="360.0"/>    <!-- you can use +degree or -degree unit -->
+    <arg name="angular_tolerance" value="0.7"/>
+    <arg name="degree" value="180.0"/>    <!-- you can use +degree or -degree unit -->
 
     <param name="angular_scale" value="$(arg angular_tolerance)" />
 

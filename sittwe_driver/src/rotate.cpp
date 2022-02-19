@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     int rate = 10;
     ros::Rate r(rate);
 
-    float angular_velocity = rpm_10;  
+    float angular_velocity = rpm_15;  
 
     geometry_msgs::Twist move_cmd;
     move_cmd.linear.x = 0.0;
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
     double last_angle = yaw;
     double turn_angle = 0;
 
-    while( abs(turn_angle) < abs(goal_angel) )
+    while( turn_angle < goal_angel )
     {
         ROS_INFO("moving ..");
         pub.publish(move_cmd);

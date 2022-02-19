@@ -1,10 +1,10 @@
 <launch>
-    <arg name="linear_tolerance" value="1.0"/>
+    <arg name="linear_tolerance" value="0.9"/>
     <arg name="meter" value="1.0"/>     <!-- you can use only positive meter unit -->
 
     <param name="linear_scale" value="$(arg linear_tolerance)" />
 
-    <node name="forward_calibrate" pkg="sittwe_driver" type="drive_forward" output="screen">
+    <node name="forward_calibrate" pkg="sittwe_driver" type="drive_forward_constant" output="screen">
         <param name="forward_meter" value="$(arg meter)"/>
     </node>
 </launch>

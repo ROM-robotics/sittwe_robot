@@ -104,6 +104,8 @@ Visualization Manager:
           Value: true
         left_wheel:
           Value: false
+        odom:
+          Value: true
         right_wheel:
           Value: false
       Marker Alpha: 1
@@ -113,18 +115,19 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          left_wheel:
-            {}
-          right_wheel:
-            {}
+        odom:
+          base_link:
+            left_wheel:
+              {}
+            right_wheel:
+              {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_link
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:
