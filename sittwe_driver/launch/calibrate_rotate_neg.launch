@@ -1,0 +1,7 @@
+<launch>
+    <arg name="degree" value="-180.0"/>   
+    
+    <node name="rotate_calibrate" pkg="sittwe_driver" type="drive_rotate" output="screen">
+        <param name="rotate_degree" value="$(arg degree)"/>
+    </node>
+</launch>

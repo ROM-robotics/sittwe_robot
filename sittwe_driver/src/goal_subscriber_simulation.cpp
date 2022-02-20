@@ -24,6 +24,10 @@ public:
     pi_ = 3.141592; float two_pi = 6.283184;
     deg_to_rad_constant = 3.141592/180.0;
     emergency_stop = false;
+    angular_scale = 1.0;
+    linear_scale = 1.0;
+    nh_.getParam("/angular_scale", angular_scale);
+    nh_.getParam("/linear_scale", linear_scale);
   }
 
   ~GoalServer(void) { }
@@ -66,7 +70,7 @@ public:
 
   void goX(double x, double ref_x, double ref_y)
   {
-    double target_dist = x;
+    double target_dist = x * linear_scale;
     double distance = 0;
     ROS_INFO(" goX(): ");
     ROS_INFO_STREAM(" distance = "<< target_dist); ROS_INFO_STREAM(" linear_velocity = "<< constant_lin_vel); 
@@ -80,17 +84,15 @@ public:
 
       tf::StampedTransform currentTF = checkTF();
       double current_distance = sqrt(  pow(ref_x - currentTF.getOrigin().x(), 2) + pow(ref_y - currentTF.getOrigin().y(), 2)  );
-      distance = std::abs(current_distance);
+      distance = abs(current_distance);
     }
     ROS_INFO(" goX() # END");
   }
 
   void rot(double radian)
   {
-    double goal_angel = std::abs(radian);
-    // ROS_INFO_STREAM("radian = " << radian );
-    // ROS_INFO_STREAM("abs(radian) = " << abs(radian) ); // error
-    ROS_INFO_STREAM("std::abs(radian) = " << std::abs(radian) );
+    double goal_angel = abs(radian) * angular_scale;
+    
     tf::StampedTransform currentTF = checkTF();
     
     tf::Matrix3x3 m( currentTF.getRotation() );
@@ -102,9 +104,8 @@ public:
     if( radian >= 0 )       { move_cmd.angular.z = angular_velocity;    }
     else if ( radian < 0)  { move_cmd.angular.z = -angular_velocity;   }
     move_cmd.linear.x = 0.0;
-    ROS_INFO(" rot():"); ROS_INFO_STREAM("ANGULAR VELOCITY" << move_cmd.angular.z );
-    ROS_INFO_STREAM("turn_angle = "<< turn_angle << " , goal_angel = " << goal_angel);
-    while( std::abs(turn_angle) < std::abs(goal_angel) )
+    ROS_INFO(" rot():"); //ROS_INFO_STREAM("ANGULAR VELOCITY" << -angular_velocity);
+    while( abs(turn_angle) < abs(goal_angel) )
     {
         ROS_INFO("rot() => while loop");
         pub.publish(move_cmd);
@@ -184,6 +185,8 @@ protected:
   float pi_,two_pi;
   float deg_to_rad_constant;
   bool emergency_stop;
+  double angular_scale;
+  double linear_scale;
 };
 
 int main(int argc, char** argv)

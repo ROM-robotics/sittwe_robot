@@ -230,8 +230,8 @@ target_link_libraries(base_controller ${catkin_LIBRARIES})
 add_executable(twist_to_motors src/twist_to_motors.cpp)
 target_link_libraries(twist_to_motors ${catkin_LIBRARIES})
 
-add_executable(goal_server src/goal_server.cpp)
-target_link_libraries(goal_server ${catkin_LIBRARIES})
+#add_executable(goal_server src/goal_server.cpp)
+#target_link_libraries(goal_server ${catkin_LIBRARIES})
 
 add_executable(goal_subscriber src/goal_subscriber.cpp)
 target_link_libraries(goal_subscriber ${catkin_LIBRARIES})

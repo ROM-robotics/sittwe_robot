@@ -1,5 +1,5 @@
 <launch>
-    <arg name="meter" value="1.0"/>  
+    <arg name="meter" value="-1.0"/>  
     
     <node name="forward_calibrate" pkg="sittwe_driver" type="drive_forward_constant" output="screen">
         <param name="forward_meter" value="$(arg meter)"/>

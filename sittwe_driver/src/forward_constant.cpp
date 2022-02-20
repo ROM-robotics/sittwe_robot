@@ -31,12 +31,11 @@ int main(int argc, char** argv)
     ros::Duration(1).sleep();
     // move_cmd.linear.x += min_lin_velocity;
 
-    double linear_scale = 0.0;
-    n.getParam("/linear_scale", linear_scale);
+ 
     float dis = 0.0;
     nh_private_.getParam("forward_meter", dis);
 
-    float goal_distance = dis * linear_scale;    // meter
+    float goal_distance = dis;    // meter
 
         try     {   listener.waitForTransform("odom","base_link", ros::Time(0), ros::Duration(1.0));            }
         catch(tf::LookupException e)    

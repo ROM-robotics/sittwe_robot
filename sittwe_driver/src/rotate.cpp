@@ -28,18 +28,6 @@ float degree_to_radian(float angle)
 
 int main(int argc, char** argv)
 {
-    /*
-    if(argc != 2) { 
-        std::cout<<" Error!"<<std::endl;
-        std::cout<<" [ Usage: ]"<<std::endl;
-        std::cout<<"    rosrun rom2109_controller rotate [+/-degree]  "<<std::endl<<std::endl;
-        std::cout<<"    example: rosrun rom2109_controller rotate -90 "<<std::endl;
-        return -1; 
-    }
-    float dis = atof(argv[1]);
-    */
-
-    //ROS_INFO_STREAM("degree"<< dis);
     ros::init(argc, argv, "rotate");
     ros::NodeHandle n;
     ros::NodeHandle nh_private_("~");
@@ -54,8 +42,7 @@ int main(int argc, char** argv)
     geometry_msgs::Twist move_cmd;
     move_cmd.linear.x = 0.0;
 
-    double angular_scale = 0.0;
-    n.getParam("/angular_scale", angular_scale);
+
     float dis = 0.0;
     nh_private_.getParam("rotate_degree", dis);
 
@@ -65,7 +52,7 @@ int main(int argc, char** argv)
 
     ros::Duration(1).sleep();
     
-    float goal_angel = degree_to_radian(dis) * angular_scale;               
+    float goal_angel = degree_to_radian(dis);               
     //float angular_tolarance=0.0175;                         // 1 degree
     
     try
