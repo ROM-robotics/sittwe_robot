@@ -24,8 +24,8 @@ public:
     pi_ = 3.141592; float two_pi = 6.283184;
     deg_to_rad_constant = 3.141592/180.0;
     emergency_stop = false;
-    angular_scale = 0.0;
-    linear_scale = 0.0;
+    angular_scale = 1.0;
+    linear_scale = 1.0;
     nh_.getParam("/angular_scale", angular_scale);
     nh_.getParam("/linear_scale", linear_scale);
   }
@@ -68,21 +68,25 @@ public:
     return res;
   }
 
-  void goX(double x)
+  void goX(double x, double ref_x, double ref_y)
   {
+    double target_dist = x * linear_scale;
     double distance = 0;
-    double target_dist = abs(x) * linear_scale;
-    while( distance > target_dist )
+    ROS_INFO(" goX(): ");
+    ROS_INFO_STREAM(" distance = "<< target_dist); ROS_INFO_STREAM(" linear_velocity = "<< constant_lin_vel); 
+    while( distance < target_dist ) 
     {
+      ROS_INFO(" goX() =>  while");
       move_cmd.linear.x = constant_lin_vel;
       move_cmd.angular.z= 0.0;
       pub.publish(move_cmd);
       r.sleep();
 
       tf::StampedTransform currentTF = checkTF();
-      double current_x = currentTF.getOrigin().x();
-      distance = abs(x - current_x);
+      double current_distance = sqrt(  pow(ref_x - currentTF.getOrigin().x(), 2) + pow(ref_y - currentTF.getOrigin().y(), 2)  );
+      distance = abs(current_distance);
     }
+    ROS_INFO(" goX() # END");
   }
 
   void rot(double radian)
@@ -100,9 +104,10 @@ public:
     if( radian >= 0 )       { move_cmd.angular.z = angular_velocity;    }
     else if ( radian < 0)  { move_cmd.angular.z = -angular_velocity;   }
     move_cmd.linear.x = 0.0;
+    ROS_INFO(" rot():"); //ROS_INFO_STREAM("ANGULAR VELOCITY" << -angular_velocity);
     while( abs(turn_angle) < abs(goal_angel) )
     {
-        ROS_INFO("moving ..");
+        ROS_INFO("rot() => while loop");
         pub.publish(move_cmd);
         r.sleep();
 
@@ -111,12 +116,12 @@ public:
         tf::Matrix3x3 m( currentTF.getRotation() );
         m.getRPY(roll,pitch,yaw);
         double rotation = yaw;
-        //ROS_INFO_STREAM("current Yaw"<< yaw);
+        ROS_INFO_STREAM("rot() => current Yaw"<< yaw);
         double delta_angle = normalize_angle(rotation- last_angle);
         turn_angle += delta_angle;
         last_angle = rotation;
     }
-
+    ROS_INFO(" rot() # END");
   }
 
   void stop()
@@ -150,8 +155,8 @@ public:
     ROS_INFO_STREAM("r_distance = " << r_distance << ", theta = "<< theta);
 
     rot(theta);
-    goX(r_distance);
-    rot(0.018); // +1 degree
+    goX(r_distance, currentTF.getOrigin().x(), currentTF.getOrigin().y());
+    rot(-theta); // +1 degree
     stop();
     
   }
