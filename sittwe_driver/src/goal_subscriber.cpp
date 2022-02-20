@@ -24,6 +24,10 @@ public:
     pi_ = 3.141592; float two_pi = 6.283184;
     deg_to_rad_constant = 3.141592/180.0;
     emergency_stop = false;
+    angular_scale = 0.0;
+    linear_scale = 0.0;
+    nh_.getParam("/angular_scale", angular_scale);
+    nh_.getParam("/linear_scale", linear_scale);
   }
 
   ~GoalServer(void) { }
@@ -46,6 +50,7 @@ public:
         try     {   listener.lookupTransform("odom","base_link", ros::Time(0), transform);                      }
         catch(tf::TransformException e)
                 {   ROS_INFO_STREAM("Cannot get tf between /odom and /baselink. Error= "<< e.what()<<"\n");     } 
+    //ROS_INFO_STREAM("Acquire.. transform");
     return transform;
   }
 
@@ -65,8 +70,9 @@ public:
 
   void goX(double x)
   {
-    float distance = 0;
-    while( distance > abs(x) )
+    double distance = 0;
+    double target_dist = abs(x) * linear_scale;
+    while( distance > target_dist )
     {
       move_cmd.linear.x = constant_lin_vel;
       move_cmd.angular.z= 0.0;
@@ -79,25 +85,9 @@ public:
     }
   }
 
-  void goY(double y)
+  void rot(double radian)
   {
-    float distance = 0;
-    while( distance > abs(y) )
-    {
-      move_cmd.linear.x = constant_lin_vel;
-      move_cmd.angular.z= 0.0;
-      pub.publish(move_cmd);
-      r.sleep();
-
-      tf::StampedTransform currentTF = checkTF();
-      double current_y = currentTF.getOrigin().y();
-      distance = abs(y - current_y);
-    }
-  }
-
-  void rot(int degree)
-  {
-    double goal_angel = abs(degree)*deg_to_rad_constant;
+    double goal_angel = abs(radian) * angular_scale;
     
     tf::StampedTransform currentTF = checkTF();
     
@@ -107,9 +97,9 @@ public:
     double last_angle = yaw;
     double turn_angle = 0;
 
-    if( degree > 0 )       { move_cmd.angular.z = angular_velocity;    }
-    else if ( degree < 0)  { move_cmd.angular.z = -angular_velocity;   }
-
+    if( radian >= 0 )       { move_cmd.angular.z = angular_velocity;    }
+    else if ( radian < 0)  { move_cmd.angular.z = -angular_velocity;   }
+    move_cmd.linear.x = 0.0;
     while( abs(turn_angle) < abs(goal_angel) )
     {
         ROS_INFO("moving ..");
@@ -129,44 +119,41 @@ public:
 
   }
 
+  void stop()
+  {
+    move_cmd.linear.x = 0.0;
+    move_cmd.angular.z= 0.0;
+    for(int i=0;i<10;i++)
+    {
+      pub.publish(move_cmd);
+      r.sleep();
+    }
+  }
+
   void goalCB(const geometry_msgs::PoseStamped::ConstPtr& target_pose)
   {
     
     double target_x = target_pose->pose.position.x;   double target_y = target_pose->pose.position.y;
-    ROS_INFO_STREAM("X=" << target_x << "Y=" << target_y << "W=" << target_pose->pose.orientation.w );
+    ROS_INFO_STREAM("X = " << target_x << ", Y = " << target_y << ", W = " << target_pose->pose.orientation.w );
     int quardrant = checkQuardrant(target_x, target_y);
     ROS_INFO_STREAM("Quardrant = "<< quardrant);
 
-/*
     tf::StampedTransform currentTF = checkTF();
+    double r_distance, theta; 
 
-    double current_x = currentTF.getOrigin().x();
-    double current_y = currentTF.getOrigin().y();
+    r_distance = sqrt(  pow(target_x - currentTF.getOrigin().x(), 2) + pow(target_y - currentTF.getOrigin().y(), 2)  );
+    theta = atan2( target_y - currentTF.getOrigin().y() , target_x - currentTF.getOrigin().x() ); 
+    /*  
+      atan = gives angle value between -90 and 90
+      atan2 = gives angle value between -180 and 180
+    */
+    ROS_INFO_STREAM("r_distance = " << r_distance << ", theta = "<< theta);
 
-    double diff_x = target_x - current_x;
-    double diff_y = target_y - current_y;
+    rot(theta);
+    goX(r_distance);
+    rot(0.018); // +1 degree
+    stop();
     
-    switch (quardrant)
-    {
-    case 1:
-      goY(diff_y); rot(90); goX(diff_x); rot(-90);
-      break;
-    case 2:
-      goY(diff_y); rot(-90); goX(diff_x); rot(90);
-      break;
-    case 3:
-      rot(180); goY(diff_y); rot(-90); goX(diff_x); rot(-90);
-      break;
-    case 4:
-      rot(-180); goY(diff_y); rot(90); goX(diff_x); rot(90);
-      break;
-    default:
-      ROS_INFO("Switch(quardrant) Error!");
-      break;
-    }
-
-
-*/
   }
 
   void emergencyCB(const std_msgs::Int8::ConstPtr& msg)
@@ -193,6 +180,8 @@ protected:
   float pi_,two_pi;
   float deg_to_rad_constant;
   bool emergency_stop;
+  double angular_scale;
+  double linear_scale;
 };
 
 int main(int argc, char** argv)
