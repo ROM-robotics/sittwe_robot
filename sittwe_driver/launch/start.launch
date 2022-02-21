@@ -1,18 +1,15 @@
 <launch>
+	<arg name="camera" value="true"/>
+	<arg name="calibrate" value="true"/>
+
+	<!-- CALIBRATE THIS 4 PARAMTERS FIRST -->
     <arg name="linear_plus_scale" value="1.0"/>
     <arg name="linear_neg_scale"  value="1.0"/>
     
     <arg name="angular_plus_scale" value="1.0"/>
     <arg name="angular_neg_scale"  value="1.0"/>
 
-    <include file="$(find sittwe_description)/launch/urdf.launch" />
-
-    <node name="arduino_node" pkg="sittwe_driver" type="arduino_node.py" output="screen">
-        <param name="port" value="/home/ubuntu/romrobotics" />
-        <param name="baudRate" value="115200" />
-    </node>
-   
-   <node name="twistToMotors" pkg="sittwe_driver" type="twist_to_motors" />
+    <node name="twistToMotors" pkg="sittwe_driver" type="twist_to_motors" />
 
 	<node name="base_controller_node" pkg="sittwe_driver" type="base_controller">
 	    <param name="publish_tf" value="true" /> <!-- false for ekf -->
@@ -26,5 +23,15 @@
 	    <param name="alpha" value="1.0" />
 	</node>
 	 
-	<include file="$(find sittwe_picam)/launch/camerav2_410x308_30fps.launch" />
+	
+	<!-- CAMERA -->
+  	<group if="$(eval camera == true)">
+	 	<include file="$(find sittwe_picam)/launch/camerav2_410x308_30fps.launch" />
+	</group>
+
+	<!-- CALIBRATE -->
+	<group if="$(eval calibrate == false)">
+	 	<node name="goal_server" pkg="sittwe_driver" type="goal_subscriber" />
+	</group>
+
 </launch>

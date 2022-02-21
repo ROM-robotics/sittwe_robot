@@ -147,6 +147,7 @@ public:
 
     r_distance = sqrt(  pow(target_x - currentTF.getOrigin().x(), 2) + pow(target_y - currentTF.getOrigin().y(), 2)  );
     theta = atan2( target_y - currentTF.getOrigin().y() , target_x - currentTF.getOrigin().x() ); 
+    
     /*  
       atan = gives angle value between -90 and 90
       atan2 = gives angle value between -180 and 180

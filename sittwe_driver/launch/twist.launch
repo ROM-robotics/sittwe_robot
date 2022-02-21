@@ -13,4 +13,7 @@
 	    <param name="angular_scale_accel" value="1.0" />
 	    <param name="alpha" value="1.0" />
 	</node>
+
+	<include file="$(find sittwe_picam)/launch/camerav2_410x308_30fps.launch" />
+	
 </launch>
