@@ -19,8 +19,8 @@ public:
     goal_sub = nh_.subscribe("/move_base_simple/goal", 1, &GoalServer::goalCB, this);
 
     rate=10;
-    constant_lin_vel = 0.00408 * 20.0;           // 20 rpm
-    angular_velocity = 0.4120; 
+    constant_lin_vel = 0.00408 * 20.0;           // 20 rpm 20rpm => 0.08168140
+    angular_velocity = 0.041253236 * 10.0;    // 10 rpm 
     pi_ = 3.141592; float two_pi = 6.283184;
     deg_to_rad_constant = 3.141592/180.0;
     emergency_stop = false;
