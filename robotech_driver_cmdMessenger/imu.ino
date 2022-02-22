@@ -1,89 +1,69 @@
-///* 
-// *  gyro register 00 is full scale range(+-250 deg per second) that have angular vel rate)--> 41.6 rmp
-// *  eg 250/360 * 60 = 41.6 rpm
-//
-// *  accel AFS_SEL = 0 is full scale range(+-2g) that is least significant bit 16384LSB/s
-// *  eg 20000/16384 = 1.2 g
-//*/
-//void setupIMU()
-//{
-//  Wire.begin();
-//  Wire.beginTransmission(0b1101000);// (AD0 low)slave address  , if AD0 is high address is (0b1101000)
-//  Wire.write(0x6B); // power management
-//  Wire.write(0b00000000); // sleep-register B6 to zero
-//  Wire.endTransmission();
-//  Wire.beginTransmission(0b1101000); // Accessing the mpu
-//  Wire.write(0x1B); // access the register 1B(gyroscope configrution)
-//  Wire.write(0b00000000); // settint the gyro to full scale
-//  Wire.endTransmission();
-//  Wire.beginTransmission(0b1101000);
-//  Wire.write(0x1C);
-//  Wire.write(0b00000000); //setting accel to +- 2g
-//  Wire.endTransmission();
-//}
-//
-//void updateIMU()
-//{
-//  recordAccelRegisters();
-//  recordGyroRegisters();
-//}
-//
-//void recordGyroRegisters(){
-//  Wire.beginTransmission(0b1101000);
-//  Wire.write(0x43);
-//  Wire.endTransmission();
-//  Wire.requestFrom(0b1101000,6);
-//  while(Wire.available() < 6);
-//  gyroX = Wire.read() << 8 | Wire.read();
-//  gyroY = Wire.read() << 8 | Wire.read();
-//  gyroZ = Wire.read() << 8 | Wire.read();
-//  processGyroData();
-//}
-//
-//void processGyroData(){
-//  rotX = gyroX / 131.0;
-//  rotY = gyroY / 131.0;
-//  rotZ = gyroZ / 131.0;
-//
-//  // deg to radian
-//  rotX = rotX * 0.017453292;
-//  rotY = rotY * 0.017453292;
-//  rotZ = rotZ * 0.017453292;
-//}
-//
-//
-//void recordAccelRegisters(){
-//  Wire.beginTransmission(0b1101000);// i2c of mpu
-//  Wire.write(0x3B); //Starting reg for accel readings
-//  Wire.endTransmission();
-//  Wire.requestFrom(0b1101000,6);
-//  while(Wire.available()<6);
-//  accelX = Wire.read()<<8|Wire.read();// store first two bytes into a
-//  accelY = Wire.read()<<8|Wire.read();// store second two bytes into a
-//  accelZ = Wire.read()<<8|Wire.read();// store last two bytes into a
-//  processAccelData();
-//}
-//
-//void processAccelData(){
-//  gForceX = accelX / 16384.0;
-//  gForceY = accelY / 16384.0;
-//  gForceZ = accelZ / 16384.0;
-//}
+void calibrate_imu()
+{
+      if (!mpu.setup(0x68)) {  // change to your own address
+        while (1) {
+            //Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
+            delay(5000);
+        }
+    }
 
-//void printData(){
-//  Serial.print("Gyro (rad)");
-//  Serial.print(" X=");
-//  Serial.print(rotX);
-//  Serial.print(" Y=");
-//  Serial.print(rotY);
-//  Serial.print(" Z=");
-//  Serial.println(rotZ);
-//
-//  Serial.print(" Accel (g)");
-//  Serial.print(" X=");
-//  Serial.print(gForceX);
-//  Serial.print(" Y=");
-//  Serial.print(gForceY);
-//  Serial.print(" Z=");
-//  Serial.println(gForceZ);
-//}
+    // calibrate anytime you want to
+    //Serial.println("Accel Gyro calibration will start in 5sec.");
+    //Serial.println("Please leave the device still on the flat plane.");
+    mpu.verbose(true);
+    delay(5000);
+    mpu.calibrateAccelGyro();
+
+    //Serial.println("Mag calibration will start in 5sec.");
+    //Serial.println("Please Wave device in a figure eight until done.");
+    delay(5000);
+    mpu.calibrateMag();
+
+    //print_calibration();
+    mpu.verbose(false);
+}
+void print_roll_pitch_yaw() {
+    int yaw_ = (int)mpu.getYaw() * -1;
+    yaw_ = yaw_ - 90;
+    yaw = yaw_;
+    //Serial.print("Yaw, Pitch, Roll: ");
+    //Serial.print(mpu.getYaw(), 2);
+    //Serial.print(", ");
+    //Serial.print(mpu.getPitch(), 2);
+    //Serial.print(", ");
+    //Serial.println(mpu.getRoll(), 2);
+}
+
+void print_calibration() {
+  /*
+    Serial.println("< calibration parameters >");
+    Serial.println("accel bias [g]: ");
+    Serial.print(mpu.getAccBiasX() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
+    Serial.print(", ");
+    Serial.print(mpu.getAccBiasY() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
+    Serial.print(", ");
+    Serial.print(mpu.getAccBiasZ() * 1000.f / (float)MPU9250::CALIB_ACCEL_SENSITIVITY);
+    Serial.println();
+    Serial.println("gyro bias [deg/s]: ");
+    Serial.print(mpu.getGyroBiasX() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
+    Serial.print(", ");
+    Serial.print(mpu.getGyroBiasY() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
+    Serial.print(", ");
+    Serial.print(mpu.getGyroBiasZ() / (float)MPU9250::CALIB_GYRO_SENSITIVITY);
+    Serial.println();
+    Serial.println("mag bias [mG]: ");
+    Serial.print(mpu.getMagBiasX());
+    Serial.print(", ");
+    Serial.print(mpu.getMagBiasY());
+    Serial.print(", ");
+    Serial.print(mpu.getMagBiasZ());
+    Serial.println();
+    Serial.println("mag scale []: ");
+    Serial.print(mpu.getMagScaleX());
+    Serial.print(", ");
+    Serial.print(mpu.getMagScaleY());
+    Serial.print(", ");
+    Serial.print(mpu.getMagScaleZ());
+    Serial.println();
+    */
+}

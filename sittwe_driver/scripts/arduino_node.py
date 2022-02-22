@@ -63,6 +63,7 @@ class Arduino_Class(object):
 					self.actual_rpms.actual_right = self.actual_right_rpm
 					self.actual_rpms.actual_left = self.actual_left_rpm
 					self.actual_rpms.delta_time = self.delta_time;
+					self.actual_rpms.imu_yaw = imu_yaw;
 					self._Actual_Publisher.publish(self.actual_rpms)
 
 			except:

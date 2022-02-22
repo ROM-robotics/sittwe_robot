@@ -29,7 +29,11 @@
 #include <Wire.h>
 #include "robot_specs.h"
 #include <CmdMessenger.h>
+#include "MPU9250.h"
 
+
+MPU9250 mpu;
+int yaw = 0;
 int end_bit = 0;
 char field_separator   = ',';
 char command_separator = ' ';
@@ -81,6 +85,9 @@ void setup() {
   setupMessenger();
   setupMotors();
   setupEncoders();
+  Wire.begin();
+  delay(2000);
+  calibrate_imu();
 }
 void loop() {
   unsigned long time_t = millis();
@@ -114,7 +121,8 @@ void loop() {
     {
       Release();
     }  
-   
+
+    print_roll_pitch_yaw();
     sendMessage(delta_t_sec);
     lastMilli = time_t;
   }

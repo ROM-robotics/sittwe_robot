@@ -12,6 +12,6 @@ void sendMessage(float y)
     cmdMessenger.sendCmdArg(actual_rpm_right);
     cmdMessenger.sendCmdArg(actual_rpm_left); 
     cmdMessenger.sendCmdArg(y,3);       // millis to seconds
-    cmdMessenger.sendCmdArg(y,3); 
+    cmdMessenger.sendCmdArg(yaw); 
     cmdMessenger.sendCmdEnd();
 }

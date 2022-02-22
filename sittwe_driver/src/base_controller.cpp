@@ -17,6 +17,7 @@ double x_pos = 0.0;
 double y_pos = 0.0;
 double theta = 0.0;
 double imu_yaw = 0.0;
+bool use_imu = false;
 
 double delta_x = 0.0;
 double delta_y = 0.0;
@@ -72,6 +73,7 @@ int main(int argc, char** argv){
   nh_private_.getParam("angular_scale_positive", angular_scale_positive);
   nh_private_.getParam("angular_scale_negative", angular_scale_negative);
   nh_private_.getParam("angular_scale_accel", angular_scale_accel);
+  nh_private_.getParam("use_imu", use_imu);
   nh_private_.getParam("alpha", alpha);
 
   ros::Rate r(rate);
@@ -108,8 +110,15 @@ int main(int argc, char** argv){
     if(theta >= two_pi) theta -= two_pi;
     if(theta <= -two_pi) theta += two_pi;
 
-    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
-    // geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(imu_yaw);
+    geometry_msgs::Quaternion odom_quat;
+    if(use_imu) 
+    {
+      odom_quat = tf::createQuaternionMsgFromYaw(imu_yaw);
+    }
+    else {
+      odom_quat = tf::createQuaternionMsgFromYaw(theta);
+    }
+    
     
       geometry_msgs::TransformStamped t;
       t.header.frame_id = odom;
