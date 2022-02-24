@@ -24,7 +24,6 @@ void calibrate_imu()
 }
 void print_roll_pitch_yaw() {
     int yaw_ = (int)mpu.getYaw() * -1;
-    yaw_ = yaw_ - 90;
     yaw = yaw_;
     //Serial.print("Yaw, Pitch, Roll: ");
     //Serial.print(mpu.getYaw(), 2);

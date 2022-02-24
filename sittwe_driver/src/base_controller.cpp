@@ -16,7 +16,7 @@ double delta_time = 0.0;
 double x_pos = 0.0;
 double y_pos = 0.0;
 double theta = 0.0;
-double imu_yaw = 0.0;
+float imu_yaw = 0.0;
 bool use_imu = false;
 
 double delta_x = 0.0;

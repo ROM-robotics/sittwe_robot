@@ -33,7 +33,9 @@
 
 
 MPU9250 mpu;
-int yaw = 0;
+float yaw = 0;
+int yaw_array[4];
+
 int end_bit = 0;
 char field_separator   = ',';
 char command_separator = ' ';
@@ -91,7 +93,8 @@ void setup() {
 }
 void loop() {
   unsigned long time_t = millis();
-  if (time_t - lastMilli >= 100)   { 
+  if (time_t - lastMilli >= 100)   
+  { 
     cmdMessenger.feedinSerialData();
     
     long delta_t = time_t - lastMilli;    
@@ -122,8 +125,25 @@ void loop() {
       Release();
     }  
 
-    print_roll_pitch_yaw();
+   
     sendMessage(delta_t_sec);
     lastMilli = time_t;
   }
+  if (mpu.update()) 
+  {
+        int j = 0;
+        static uint32_t prev_ms = millis();
+        if (millis() > prev_ms + 25) 
+        {
+            yaw_array[j] = (int) mpu.getYaw();
+            j +=1;
+            if(j>3) { j=0; }
+            prev_ms = millis();
+        }
+        float sum_sin = sin(yaw_array[0])+sin(yaw_array[1])+sin(yaw_array[2])+sin(yaw_array[3]);
+        float sum_cos = cos(yaw_array[0])+cos(yaw_array[1])+cos(yaw_array[2])+cos(yaw_array[3]);
+        float average_yaw = atan2(sum_sin, sum_cos);
+        yaw = average_yaw * -1;
+  }
+    
 }
