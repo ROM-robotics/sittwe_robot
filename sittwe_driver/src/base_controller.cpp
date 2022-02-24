@@ -8,6 +8,7 @@
 #include "robot_specs.h"
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <sensor_msgs/Imu.h>
 
 double right_act_rpm = 0.0;
 double left_act_rpm = 0.0;
@@ -16,8 +17,11 @@ double delta_time = 0.0;
 double x_pos = 0.0;
 double y_pos = 0.0;
 double theta = 0.0;
+
 float imu_yaw = 0.0;
 bool use_imu = false;
+bool use_android_imu = false;
+geometry_msgs::Quaternion android_quat;
 
 double delta_x = 0.0;
 double delta_y = 0.0;
@@ -31,7 +35,12 @@ void handle_rpm( const sittwe_driver::actual_rpm& rpm)
   right_act_rpm = rpm.actual_right;
   left_act_rpm  = rpm.actual_left;
   delta_time    = rpm.delta_time;
-  imu_yaw = rpm.imu_yaw * 0.01745329251;
+  imu_yaw = rpm.imu_yaw * 0.01745329251; // degree to radian constant
+}
+
+void handle_android( const sensor_msgs::Imu& imu) 
+{
+  android_quat = imu.orientation;
 }
 
 int main(int argc, char** argv){
@@ -39,6 +48,7 @@ int main(int argc, char** argv){
   ros::NodeHandle n;
   ros::NodeHandle nh_private_("~");
   ros::Subscriber sub = n.subscribe("actual_rpm", 50, handle_rpm);
+  ros::Subscriber android_sub = n.subscribe("/android/imu", 50, handle_android);
   ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
   tf::TransformBroadcaster broadcaster;
 
@@ -74,6 +84,7 @@ int main(int argc, char** argv){
   nh_private_.getParam("angular_scale_negative", angular_scale_negative);
   nh_private_.getParam("angular_scale_accel", angular_scale_accel);
   nh_private_.getParam("use_imu", use_imu);
+  nh_private_.getParam("use_android_imu", use_android_imu);
   nh_private_.getParam("alpha", alpha);
 
   ros::Rate r(rate);
@@ -116,12 +127,15 @@ int main(int argc, char** argv){
       odom_quat = tf::createQuaternionMsgFromYaw(imu_yaw);
     }
     else {
-      odom_quat = tf::createQuaternionMsgFromYaw(theta);
+      if(use_android_imu)
+      {
+        odom_quat = android_quat;
+      }
+      else {
+        odom_quat = tf::createQuaternionMsgFromYaw(theta); // encoder only
+      }
+      
     }
-    // Normalize
-    double q0, q1, q2, q3;
-    q0 = odom_quat.w; q1 = odom_quat.x; q2 = odom_quat.y; q3 = odom_quat.z;
-    double d = sqrt(q0*q0+q1*q1+q2*q2+q3*q3); // it might be unsafe when d=0;
 
       geometry_msgs::TransformStamped t;
       t.header.frame_id = odom;
@@ -129,10 +143,7 @@ int main(int argc, char** argv){
       t.transform.translation.x = x_pos;
       t.transform.translation.y = y_pos;
       t.transform.translation.z = 0.0;
-      t.transform.rotation.w = q0/d;
-      t.transform.rotation.x = q1/d;
-      t.transform.rotation.y = q2/d;
-      t.transform.rotation.z = q3/d;
+      t.transform.rotation = odom_quat;
       t.header.stamp = current_time;
 
       broadcaster.sendTransform(t);
@@ -144,10 +155,7 @@ int main(int argc, char** argv){
     odom_msg.pose.pose.position.x = x_pos;
     odom_msg.pose.pose.position.y = y_pos;
     odom_msg.pose.pose.position.z = 0.0;
-    odom_msg.pose.pose.orientation.w = q0/d;
-    odom_msg.pose.pose.orientation.x = q1/d;
-    odom_msg.pose.pose.orientation.y = q2/d;
-    odom_msg.pose.pose.orientation.z = q3/d;
+    odom_msg.pose.pose.orientation = odom_quat;
 
 
     if (right_act_rpm == 0 && left_act_rpm == 0){
