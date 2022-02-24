@@ -139,11 +139,15 @@ void loop() {
             j +=1;
             if(j>3) { j=0; }
             prev_ms = millis();
+
+            //float sum_sin = sin(yaw_array[0])+sin(yaw_array[1])+sin(yaw_array[2])+sin(yaw_array[3]);
+            //float sum_cos = cos(yaw_array[0])+cos(yaw_array[1])+cos(yaw_array[2])+cos(yaw_array[3]);
+            //float average_yaw = atan2(sum_sin, sum_cos);
+            //yaw = average_yaw * -1;
+            //yaw = sum_sin;
+            yaw = (int)mpu.getYaw()*-1;
         }
-        float sum_sin = sin(yaw_array[0])+sin(yaw_array[1])+sin(yaw_array[2])+sin(yaw_array[3]);
-        float sum_cos = cos(yaw_array[0])+cos(yaw_array[1])+cos(yaw_array[2])+cos(yaw_array[3]);
-        float average_yaw = atan2(sum_sin, sum_cos);
-        yaw = average_yaw * -1;
+        
   }
     
 }

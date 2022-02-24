@@ -31,7 +31,7 @@ void handle_rpm( const sittwe_driver::actual_rpm& rpm)
   right_act_rpm = rpm.actual_right;
   left_act_rpm  = rpm.actual_left;
   delta_time    = rpm.delta_time;
-  imu_yaw = rpm.imu_yaw;
+  imu_yaw = rpm.imu_yaw * 0.01745329251;
 }
 
 int main(int argc, char** argv){
@@ -118,15 +118,21 @@ int main(int argc, char** argv){
     else {
       odom_quat = tf::createQuaternionMsgFromYaw(theta);
     }
-    
-    
+    // Normalize
+    double q0, q1, q2, q3;
+    q0 = odom_quat.w; q1 = odom_quat.x; q2 = odom_quat.y; q3 = odom_quat.z;
+    double d = sqrt(q0*q0+q1*q1+q2*q2+q3*q3); // it might be unsafe when d=0;
+
       geometry_msgs::TransformStamped t;
       t.header.frame_id = odom;
       t.child_frame_id = base_link;
       t.transform.translation.x = x_pos;
       t.transform.translation.y = y_pos;
       t.transform.translation.z = 0.0;
-      t.transform.rotation = odom_quat;
+      t.transform.rotation.w = q0/d;
+      t.transform.rotation.x = q1/d;
+      t.transform.rotation.y = q2/d;
+      t.transform.rotation.z = q3/d;
       t.header.stamp = current_time;
 
       broadcaster.sendTransform(t);
@@ -138,7 +144,10 @@ int main(int argc, char** argv){
     odom_msg.pose.pose.position.x = x_pos;
     odom_msg.pose.pose.position.y = y_pos;
     odom_msg.pose.pose.position.z = 0.0;
-    odom_msg.pose.pose.orientation = odom_quat;
+    odom_msg.pose.pose.orientation.w = q0/d;
+    odom_msg.pose.pose.orientation.x = q1/d;
+    odom_msg.pose.pose.orientation.y = q2/d;
+    odom_msg.pose.pose.orientation.z = q3/d;
 
 
     if (right_act_rpm == 0 && left_act_rpm == 0){
