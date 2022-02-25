@@ -1,0 +1,11 @@
+# FOR HOST
+sudo apt install openssh-server
+sudo apt install ros-noetic-key-teleop
+
+
+# FOR RASPBERRY PI
+sudo su
+timedatectl set-timezone Asia/Yangon
+timedatectl set-ntp false
+timedatectl set-time $(ssh mr_robot@192.168.0.101 "date +%Y-%m-%d") && timedatectl set-time $(ssh mr_robot@192.168.0.101 "date +%H:%M:%S")
+timedatectl set-ntp true

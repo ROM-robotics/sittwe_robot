@@ -21,5 +21,9 @@
     <param name="framerate" value="30"/>
     <param name="exposure_mode" value="antishake"/>
     <param name="shutter_speed" value="0"/>
+
+    <remap from="/raspicam_node/image/compressed" to="/image_raw/compressed"/>
+    <remap from="/raspicam_node/image" to="/image_raw"/>
+    <remap from="/raspicam_node/camera_info" to="/camera_info" />
   </node>
 </launch>

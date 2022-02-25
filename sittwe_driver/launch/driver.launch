@@ -1,10 +1,15 @@
 <launch>
-
+   <arg name="camera" value="true"/>
    <include file="$(find sittwe_description)/launch/urdf.launch" />
 
    <node name="arduino_node" pkg="sittwe_driver" type="arduino_node.py" output="screen">
       <param name="port" value="/home/ubuntu/romrobotics" />
       <param name="baudRate" value="115200" />
    </node>
+
+   <!-- CAMERA -->
+  	<group if="$(eval camera == true)">
+	 	<include file="$(find sittwe_picam)/launch/camerav2_410x308_30fps.launch" />
+	</group>
    
 </launch>

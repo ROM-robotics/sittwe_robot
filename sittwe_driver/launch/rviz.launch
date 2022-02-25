@@ -1,3 +1,7 @@
 <launch>
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find sittwe_driver)/rviz/rviz.rviz"/>
+
+    <node name="teleop" pkg="key_teleop" type="key_teleop.py" output="screen"/>
+    <node name="manual" pkg="sittwe_driver" type="manual" output="screen"/>
+    <!-- <node name="manual_android" pkg="sittwe_driver" type="manualAnd"/> -->
 </launch>

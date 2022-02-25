@@ -1,6 +1,5 @@
 <launch>
-	<arg name="camera" value="true"/>
-	<arg name="calibrate" value="true"/>
+	<arg name="goal_server" value="false"/> <!-- if false goal_subscriber will run -->
 
 	<!-- CALIBRATE THIS 4 PARAMTERS FIRST -->
     <arg name="linear_plus_scale" value="1.0"/>
@@ -15,8 +14,8 @@
 	    <param name="publish_tf" value="true" /> <!-- false for ekf -->
 
 	    <param name="use_imu" value="false" /> 
-		<param name="use_android_imu" value="true"/>
-		
+		<param name="use_android_imu" value="false"/>
+
 	    <param name="publish_rate" value="10.0" />
 	    <param name="linear_scale_positive" value="$(arg linear_plus_scale)" />
 	    <param name="linear_scale_negative" value="$(arg linear_neg_scale)" />
@@ -25,15 +24,9 @@
 	    <param name="angular_scale_accel" value="1.0" />
 	    <param name="alpha" value="1.0" />
 	</node>
-	 
-	
-	<!-- CAMERA -->
-  	<group if="$(eval camera == true)">
-	 	<include file="$(find sittwe_picam)/launch/camerav2_410x308_30fps.launch" />
-	</group>
 
 	<!-- CALIBRATE -->
-	<group if="$(eval calibrate == false)">
+	<group if="$(eval goal_server == true)">
 	 	<node name="goal_server" pkg="sittwe_driver" type="goal_subscriber" />
 	</group>
 

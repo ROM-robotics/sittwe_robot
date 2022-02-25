@@ -211,7 +211,6 @@ include_directories(
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
-
 add_executable(stop src/stop.cpp)
 target_link_libraries(stop ${catkin_LIBRARIES})
 
@@ -235,6 +234,13 @@ target_link_libraries(twist_to_motors ${catkin_LIBRARIES})
 
 add_executable(goal_subscriber src/goal_subscriber.cpp)
 target_link_libraries(goal_subscriber ${catkin_LIBRARIES})
+
+add_executable(manual src/manual.cpp)
+target_link_libraries(manual ${catkin_LIBRARIES})
+
+add_executable(manualAnd src/manualAndroid.cpp)
+target_link_libraries(manualAnd ${catkin_LIBRARIES})
+
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
