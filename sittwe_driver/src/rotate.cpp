@@ -38,7 +38,7 @@ int main(int argc, char** argv)
     int rate = 10;
     ros::Rate r(rate);
 
-    double angular_velocity = rpm_10;  
+    double angular_velocity = rpm_15;  
 
     geometry_msgs::Twist move_cmd;
     move_cmd.linear.x = 0.0;
@@ -65,56 +65,7 @@ int main(int argc, char** argv)
         pub.publish(move_cmd);
         r.sleep();
     }
-/*
-    try
-    {
-        listener.waitForTransform("odom","base_link", ros::Time(0), ros::Duration(1.0));
-        //ROS_INFO("waitForTransform");
-    }
-    catch(tf::LookupException e)
-    {
-        ROS_INFO_STREAM("Cannot wait tf between /odom and /baselink. Error= "<< e.what()<<"\n");
-    }
 
-    try
-    {
-        listener.lookupTransform("odom","base_link", ros::Time(0), transform);
-        //ROS_INFO("first lookupTransform");
-    }
-    catch(tf::TransformException e)
-    {
-        ROS_INFO_STREAM("Cannot get tf between /odom and /baselink. Error= "<< e.what()<<"\n");
-    } 
-    
-    tf::Matrix3x3 m( transform.getRotation() );
-    double roll, pitch, yaw;
-    m.getRPY(roll, pitch, yaw);
-    double last_angle = yaw;
-
-    double rotation = 0;
-
-    while(     rotation < ( (last_angle+goal_angel)+angular_tolarance )  &&  rotation > ( (last_angle+goal_angel)-angular_tolarance  ))
-    {
-        ROS_INFO("moving ..");
-        pub.publish(move_cmd);
-        r.sleep();
-
-        try
-        {
-            listener.lookupTransform("odom","base_link", ros::Time(0), transform);
-            //ROS_INFO(" lookupTransform in while loop");
-        }
-        catch(tf::TransformException e)
-        {
-            ROS_INFO_STREAM("Cannot get tf between /odom and /baselink. Error= "<< e.what()<<"\n");
-        } 
-        tf::Matrix3x3 m( transform.getRotation() );
-        m.getRPY(roll,pitch,yaw);
-        rotation = yaw;
-        ROS_INFO_STREAM("current Yaw"<< yaw);
-    }
-*/  
-   
     // stop
     for( int i=0;i<10;i++)
     {

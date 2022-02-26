@@ -1,5 +1,5 @@
 <launch>
-	<arg name="goal_server" value="false"/> <!-- if false goal_subscriber will run -->
+	<arg name="goal_server" value="true"/> <!-- if false goal_subscriber will run -->
 
 	<!-- CALIBRATE THIS 4 PARAMTERS FIRST -->
     <arg name="linear_plus_scale" value="1.0"/>
